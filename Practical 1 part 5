@@ -1,0 +1,77 @@
+Write a program to implement singly linked list as an ADT that supports the following operations:
+v. Search for an element x in the singly linked list and return its pointer
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Function to search for an element x
+Node* search(Node* head, int x) {
+    Node* temp = head;
+
+    while (temp != NULL) {
+        if (temp->data == x)
+            return temp;   // return pointer to the found node
+        temp = temp->next;
+    }
+
+    return NULL; // element not found
+}
+
+// Insert at end (for testing)
+void insertEnd(Node** head, int x) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    newNode->data = x;
+    newNode->next = NULL;
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    Node* temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+}
+
+// Display list
+void display(Node* head) {
+    Node* temp = head;
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    Node* head = NULL;
+
+    insertEnd(&head, 10);
+    insertEnd(&head, 20);
+    insertEnd(&head, 30);
+    insertEnd(&head, 40);
+
+    printf("Linked list: ");
+    display(head);
+
+    int x;
+    printf("Enter element to search: ");
+    scanf("%d", &x);
+
+    Node* result = search(head, x);
+
+    if (result != NULL)
+        printf("Element %d found at node address: %p\n", x, result);
+    else
+        printf("Element %d not found in the list.\n", x);
+
+    return 0;
+}
