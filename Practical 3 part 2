@@ -1,0 +1,117 @@
+Write a program to implement circular linked list as an ADT which supports the following operations:  
+ii. Remove an element from the list
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Insert element at end (for testing)
+void insert(Node** head, int x) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    newNode->data = x;
+    newNode->next = newNode;
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    Node* temp = *head;
+    while (temp->next != *head)
+        temp = temp->next;
+
+    temp->next = newNode;
+    newNode->next = *head;
+}
+
+// Remove an element x from circular linked list
+void deleteElement(Node** head, int x) {
+    if (*head == NULL) {
+        printf("List is empty! Cannot delete.\n");
+        return;
+    }
+
+    Node *curr = *head, *prev = NULL;
+
+    // Case 1: Deleting head node
+    if (curr->data == x) {
+        // Only one node
+        if (curr->next == *head) {
+            *head = NULL;
+            free(curr);
+            printf("Element %d deleted.\n", x);
+            return;
+        }
+
+        // More than one node
+        prev = curr;
+        while (prev->next != *head)
+            prev = prev->next;
+
+        prev->next = curr->next;
+        *head = curr->next;
+
+        free(curr);
+        printf("Element %d deleted.\n", x);
+        return;
+    }
+
+    // Case 2: Delete a middle/end node
+    do {
+        prev = curr;
+        curr = curr->next;
+
+        if (curr->data == x) {
+            prev->next = curr->next;
+            free(curr);
+            printf("Element %d deleted.\n", x);
+            return;
+        }
+    } while (curr != *head);
+
+    printf("Element %d not found in the list.\n", x);
+}
+
+// Display circular list
+void display(Node* head) {
+    if (head == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+
+    Node* temp = head;
+    printf("Circular List: ");
+
+    do {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    } while (temp != head);
+
+    printf("(back to head)\n");
+}
+
+int main() {
+    Node* head = NULL;
+
+    insert(&head, 10);
+    insert(&head, 20);
+    insert(&head, 30);
+    insert(&head, 40);
+
+    display(head);
+
+    int x;
+    printf("Enter element to delete: ");
+    scanf("%d", &x);
+
+    deleteElement(&head, x);
+
+    display(head);
+
+    return 0;
+}
