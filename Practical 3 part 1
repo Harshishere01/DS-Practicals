@@ -1,0 +1,64 @@
+Write a program to implement circular linked list as an ADT which supports the following operations:
+i. Insert an element x in the list
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Insert element x in circular linked list
+void insert(Node** head, int x) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    newNode->data = x;
+    newNode->next = newNode;  // self loop for single node
+
+    // Case 1: List is empty
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    // Case 2: Insert at end
+    Node* temp = *head;
+
+    // Traverse to last node (whose next is head)
+    while (temp->next != *head)
+        temp = temp->next;
+
+    temp->next = newNode;
+    newNode->next = *head;
+}
+
+// Display circular list
+void display(Node* head) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    Node* temp = head;
+
+    printf("Circular List: ");
+    do {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    } while (temp != head);
+
+    printf("(back to head)\n");
+}
+
+int main() {
+    Node* head = NULL;
+
+    insert(&head, 10);
+    insert(&head, 20);
+    insert(&head, 30);
+
+    display(head);
+
+    return 0;
+}
