@@ -1,0 +1,71 @@
+Write a program to implement singly linked list as an ADT that supports the following operations:
+ ii. Insert an element x at ith position in the singly linked list
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Insert at ith position
+void insertAtPosition(Node** head, int x, int pos) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    newNode->data = x;
+    newNode->next = NULL;
+
+    // Case 1: Insert at beginning
+    if (pos == 1) {
+        newNode->next = *head;
+        *head = newNode;
+        return;
+    }
+
+    Node* temp = *head;
+    int i = 1;
+
+    // Traverse to (pos - 1)-th node
+    while (temp != NULL && i < pos - 1) {
+        temp = temp->next;
+        i++;
+    }
+
+    // If position is invalid
+    if (temp == NULL) {
+        printf("Invalid position!\n");
+        free(newNode);
+        return;
+    }
+
+    // Insert the node
+    newNode->next = temp->next;
+    temp->next = newNode;
+}
+
+// Display list
+void displayList(Node* head) {
+    Node* temp = head;
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    Node* head = NULL;
+    int value, pos;
+
+    printf("Enter value to insert: ");
+    scanf("%d", &value);
+
+    printf("Enter position: ");
+    scanf("%d", &pos);
+
+    insertAtPosition(&head, value, pos);
+    displayList(head);
+
+    return 0;
+}
