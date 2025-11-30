@@ -1,4 +1,6 @@
-part 1 
+Write a program to implement singly linked list as an ADT that supports the following operations:
+i. Insert an element x at the beginning of the singly linked list
+
 #include <stdio.h>
 #include <stdlib.h>
 
