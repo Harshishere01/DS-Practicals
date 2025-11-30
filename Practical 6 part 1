@@ -1,0 +1,80 @@
+6. Write a program to implement Binary Search Tree as an ADT which supports the following operations:
+i. Insert an element x
+
+#include <iostream>
+using namespace std;
+
+// Node structure for BST
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) {
+        data = value;
+        left = right = nullptr;
+    }
+};
+
+// BST class as ADT
+class BST {
+private:
+    Node* root;
+
+    // Helper function for recursive insertion
+    Node* insert(Node* node, int value) {
+        if (node == nullptr) {
+            return new Node(value);
+        }
+        if (value < node->data) {
+            node->left = insert(node->left, value);
+        } else if (value > node->data) {
+            node->right = insert(node->right, value);
+        } // If value == node->data, do nothing (no duplicates)
+        return node;
+    }
+
+    // Helper function to print BST Inorder (sorted)
+    void inorder(Node* node) {
+        if (node != nullptr) {
+            inorder(node->left);
+            cout << node->data << " ";
+            inorder(node->right);
+        }
+    }
+
+public:
+    // Constructor
+    BST() {
+        root = nullptr;
+    }
+
+    // Public insert function
+    void insert(int value) {
+        root = insert(root, value);
+    }
+
+    // Display BST elements in sorted order
+    void displayInorder() {
+        inorder(root);
+        cout << endl;
+    }
+};
+
+// Main function
+int main() {
+    BST tree;
+
+    tree.insert(50);
+    tree.insert(30);
+    tree.insert(70);
+    tree.insert(20);
+    tree.insert(40);
+    tree.insert(60);
+    tree.insert(80);
+
+    cout << "BST elements in inorder (sorted) traversal: ";
+    tree.displayInorder();
+
+    return 0;
+}
