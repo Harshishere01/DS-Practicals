@@ -1,0 +1,164 @@
+6. Write a program to implement Binary Search Tree as an ADT which supports the following operations:
+iv. Display the elements of the BST in preorder, inorder, and postorder traversal
+
+#include <iostream>
+using namespace std;
+
+// Node structure
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) {
+        data = value;
+        left = right = nullptr;
+    }
+};
+
+// BST ADT
+class BST {
+private:
+    Node* root;
+
+    // Recursive insert
+    Node* insert(Node* node, int value) {
+        if (!node) return new Node(value);
+        if (value < node->data)
+            node->left = insert(node->left, value);
+        else if (value > node->data)
+            node->right = insert(node->right, value);
+        return node;
+    }
+
+    // Recursive delete
+    Node* deleteNode(Node* node, int value) {
+        if (!node) return nullptr;
+
+        if (value < node->data)
+            node->left = deleteNode(node->left, value);
+        else if (value > node->data)
+            node->right = deleteNode(node->right, value);
+        else {
+            // Node found
+            if (!node->left && !node->right) { // Case 1: leaf
+                delete node;
+                return nullptr;
+            } else if (!node->left) { // Case 2: only right child
+                Node* temp = node->right;
+                delete node;
+                return temp;
+            } else if (!node->right) { // Case 2: only left child
+                Node* temp = node->left;
+                delete node;
+                return temp;
+            } else { // Case 3: two children
+                Node* temp = findMin(node->right);
+                node->data = temp->data;
+                node->right = deleteNode(node->right, temp->data);
+            }
+        }
+        return node;
+    }
+
+    // Find minimum value node (used in delete)
+    Node* findMin(Node* node) {
+        while (node && node->left)
+            node = node->left;
+        return node;
+    }
+
+    // Recursive search
+    Node* search(Node* node, int value) {
+        if (!node || node->data == value)
+            return node;
+        if (value < node->data)
+            return search(node->left, value);
+        else
+            return search(node->right, value);
+    }
+
+    // Recursive traversals
+    void inorder(Node* node) {
+        if (node) {
+            inorder(node->left);
+            cout << node->data << " ";
+            inorder(node->right);
+        }
+    }
+
+    void preorder(Node* node) {
+        if (node) {
+            cout << node->data << " ";
+            preorder(node->left);
+            preorder(node->right);
+        }
+    }
+
+    void postorder(Node* node) {
+        if (node) {
+            postorder(node->left);
+            postorder(node->right);
+            cout << node->data << " ";
+        }
+    }
+
+public:
+    BST() { root = nullptr; }
+
+    void insert(int value) { root = insert(root, value); }
+    void deleteElement(int value) { root = deleteNode(root, value); }
+    bool searchElement(int value) { return search(root, value) != nullptr; }
+
+    void displayInorder() { 
+        cout << "Inorder: "; 
+        inorder(root); 
+        cout << endl; 
+    }
+
+    void displayPreorder() { 
+        cout << "Preorder: "; 
+        preorder(root); 
+        cout << endl; 
+    }
+
+    void displayPostorder() { 
+        cout << "Postorder: "; 
+        postorder(root); 
+        cout << endl; 
+    }
+};
+
+// Main function
+int main() {
+    BST tree;
+
+    // Insert elements
+    tree.insert(50);
+    tree.insert(30);
+    tree.insert(70);
+    tree.insert(20);
+    tree.insert(40);
+    tree.insert(60);
+    tree.insert(80);
+
+    // Display traversals
+    tree.displayInorder();
+    tree.displayPreorder();
+    tree.displayPostorder();
+
+    // Search elements
+    int key = 40;
+    cout << key << (tree.searchElement(key) ? " found in BST.\n" : " not found in BST.\n");
+
+    // Delete elements
+    cout << "Deleting 50...\n";
+    tree.deleteElement(50);
+
+    // Display traversals after deletion
+    tree.displayInorder();
+    tree.displayPreorder();
+    tree.displayPostorder();
+
+    return 0;
+}
