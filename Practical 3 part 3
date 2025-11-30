@@ -1,0 +1,89 @@
+Write a program to implement circular linked list as an ADT which supports the following operations:
+iii. Search for an element x in the list and return its pointer
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Insert at end (for testing)
+void insert(Node** head, int x) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    newNode->data = x;
+    newNode->next = newNode;
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    Node* temp = *head;
+    while (temp->next != *head)
+        temp = temp->next;
+
+    temp->next = newNode;
+    newNode->next = *head;
+}
+
+// Search for element x and return pointer
+Node* search(Node* head, int x) {
+    if (head == NULL) 
+        return NULL;
+
+    Node* temp = head;
+
+    // Traverse till we return to head
+    do {
+        if (temp->data == x)
+            return temp;   // Found!
+        temp = temp->next;
+    } while (temp != head);
+
+    return NULL; // Not found
+}
+
+// Display circular list
+void display(Node* head) {
+    if (head == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+
+    Node* temp = head;
+
+    printf("Circular List: ");
+    do {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    } while (temp != head);
+
+    printf("(back to head)\n");
+}
+
+int main() {
+    Node* head = NULL;
+
+    insert(&head, 10);
+    insert(&head, 20);
+    insert(&head, 30);
+    insert(&head, 40);
+
+    display(head);
+
+    int x;
+    printf("Enter element to search: ");
+    scanf("%d", &x);
+
+    Node* found = search(head, x);
+
+    if (found != NULL)
+        printf("Element %d found at node address: %p\n", x, found);
+    else
+        printf("Element %d not found in list.\n", x);
+
+    return 0;
+}
