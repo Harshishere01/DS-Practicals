@@ -1,0 +1,91 @@
+#5. Implement Queue as an ADT.
+
+#include <iostream>
+using namespace std;
+
+class Queue {
+private:
+    int arr[100];
+    int frontIndex, rearIndex, size;
+
+public:
+    Queue() {
+        frontIndex = 0;
+        rearIndex = -1;
+        size = 0;
+    }
+
+    bool isEmpty() {
+        return size == 0;
+    }
+
+    bool isFull() {
+        return size == 100;
+    }
+
+    // Insert element
+    void enqueue(int x) {
+        if (isFull()) {
+            cout << "Queue is full\n";
+            return;
+        }
+
+        rearIndex = (rearIndex + 1) % 100;
+        arr[rearIndex] = x;
+        size++;
+    }
+
+    // Remove element
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "Queue is empty\n";
+            return;
+        }
+
+        frontIndex = (frontIndex + 1) % 100;
+        size--;
+    }
+
+    // Get front element
+    int front() {
+        if (isEmpty()) {
+            cout << "Queue is empty\n";
+            return -1;
+        }
+        return arr[frontIndex];
+    }
+
+    // Display queue elements
+    void display() {
+        if (isEmpty()) {
+            cout << "Queue is empty\n";
+            return;
+        }
+
+        int count = size;
+        int index = frontIndex;
+
+        while (count--) {
+            cout << arr[index] << " ";
+            index = (index + 1) % 100;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    Queue q;
+
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+
+    q.display();
+
+    q.dequeue();
+    q.display();
+
+    cout << "Front element = " << q.front() << endl;
+
+    return 0;
+}
