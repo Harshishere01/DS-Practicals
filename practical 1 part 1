@@ -1,0 +1,45 @@
+part 1 
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Insert at beginning
+void insertAtBeginning(Node** head, int x) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    newNode->data = x;
+    newNode->next = *head;  // Point to old head
+    *head = newNode;        // Update head
+}
+
+// Function to display list
+void displayList(Node* head) {
+    Node* temp = head;
+    if (temp == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    printf("Linked List: ");
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    Node* head = NULL;   // Start with empty list
+    int value;
+
+    printf("Enter value to insert at beginning: ");
+    scanf("%d", &value);
+
+    insertAtBeginning(&head, value);
+    displayList(head);
+
+    return 0;
+}
