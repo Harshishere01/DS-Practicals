@@ -1,0 +1,74 @@
+Write a program to implement doubly linked list as an ADT that supports the following operations:
+iii. Remove an element from the beginning of the doubly linked list
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+typedef struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+} Node;
+
+// Delete from beginning
+void deleteFromBeginning(Node** head) {
+    if (*head == NULL) {
+        printf("List is empty! Cannot delete.\n");
+        return;
+    }
+
+    Node* temp = *head;
+
+    // Move head to next node
+    *head = (*head)->next;
+
+    // If list still has nodes, update prev
+    if (*head != NULL)
+        (*head)->prev = NULL;
+
+    free(temp);
+    printf("Node deleted from beginning.\n");
+}
+
+// Insert at beginning (for testing)
+void insertAtBeginning(Node** head, int x) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    newNode->data = x;
+    newNode->prev = NULL;
+    newNode->next = *head;
+
+    if (*head != NULL)
+        (*head)->prev = newNode;
+
+    *head = newNode;
+}
+
+// Display list
+void display(Node* head) {
+    Node* temp = head;
+    while (temp != NULL) {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    Node* head = NULL;
+
+    insertAtBeginning(&head, 30);
+    insertAtBeginning(&head, 20);
+    insertAtBeginning(&head, 10);
+
+    printf("Original List: ");
+    display(head);
+
+    deleteFromBeginning(&head);
+
+    printf("After Deletion: ");
+    display(head);
+
+    return 0;
+}
+
