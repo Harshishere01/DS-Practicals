@@ -1,0 +1,97 @@
+Write a program to implement singly linked list as an ADT that supports the following operations:
+iv. Remove an element from ith position in the singly linked list.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Function to delete from ith position
+void deleteAtPosition(Node** head, int pos) {
+    if (*head == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
+
+    Node* temp = *head;
+
+    // Case 1: delete first node
+    if (pos == 1) {
+        *head = temp->next;
+        free(temp);
+        printf("Node at position %d deleted.\n", pos);
+        return;
+    }
+
+    // Traverse to (pos - 1)-th node
+    for (int i = 1; temp != NULL && i < pos - 1; i++) {
+        temp = temp->next;
+    }
+
+    // If position is invalid
+    if (temp == NULL || temp->next == NULL) {
+        printf("Invalid position!\n");
+        return;
+    }
+
+    Node* nodeToDelete = temp->next;
+    temp->next = temp->next->next;
+    free(nodeToDelete);
+
+    printf("Node at position %d deleted.\n", pos);
+}
+
+// Function to insert at end (for testing)
+void insertEnd(Node** head, int x) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    newNode->data = x;
+    newNode->next = NULL;
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    Node* temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+}
+
+// Display list
+void display(Node* head) {
+    Node* temp = head;
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    Node* head = NULL;
+
+    insertEnd(&head, 10);
+    insertEnd(&head, 20);
+    insertEnd(&head, 30);
+    insertEnd(&head, 40);
+
+    printf("Original list: ");
+    display(head);
+
+    int pos;
+    printf("Enter position to delete: ");
+    scanf("%d", &pos);
+
+    deleteAtPosition(&head, pos);
+
+    printf("Updated list: ");
+    display(head);
+
+    return 0;
+}
