@@ -1,0 +1,163 @@
+#7. Write a program to implement insert and search operation in AVL trees.
+
+#include <iostream>
+using namespace std;
+
+class AVL {
+private:
+    struct Node {
+        int key;
+        int height;
+        Node* left;
+        Node* right;
+        Node(int k) : key(k), height(1), left(nullptr), right(nullptr) {}
+    };
+
+    Node* root = nullptr;
+
+    int height(Node* n) {
+        return n ? n->height : 0;
+    }
+
+    int getBalance(Node* n) {
+        if (!n) return 0;
+        return height(n->left) - height(n->right);
+    }
+
+    Node* rightRotate(Node* y) {
+        Node* x = y->left;
+        Node* T2 = x->right;
+
+        // rotation
+        x->right = y;
+        y->left = T2;
+
+        // update heights
+        y->height = max(height(y->left), height(y->right)) + 1;
+        x->height = max(height(x->left), height(x->right)) + 1;
+
+        return x; // new root
+    }
+
+    Node* leftRotate(Node* x) {
+        Node* y = x->right;
+        Node* T2 = y->left;
+
+        // rotation
+        y->left = x;
+        x->right = T2;
+
+        // update heights
+        x->height = max(height(x->left), height(x->right)) + 1;
+        y->height = max(height(y->left), height(y->right)) + 1;
+
+        return y; // new root
+    }
+
+    Node* insertRec(Node* node, int key) {
+        if (!node) return new Node(key);
+
+        if (key < node->key)
+            node->left = insertRec(node->left, key);
+        else if (key > node->key)
+            node->right = insertRec(node->right, key);
+        else
+            return node; // no duplicates
+
+        // update height
+        node->height = max(height(node->left), height(node->right)) + 1;
+
+        int balance = getBalance(node);
+
+        // LL
+        if (balance > 1 && key < node->left->key)
+            return rightRotate(node);
+
+        // RR
+        if (balance < -1 && key > node->right->key)
+            return leftRotate(node);
+
+        // LR
+        if (balance > 1 && key > node->left->key) {
+            node->left = leftRotate(node->left);
+            return rightRotate(node);
+        }
+
+        // RL
+        if (balance < -1 && key < node->right->key) {
+            node->right = rightRotate(node->right);
+            return leftRotate(node);
+        }
+
+        return node;
+    }
+
+    bool searchRec(Node* node, int key) {
+        if (!node) return false;
+        if (key == node->key) return true;
+        if (key < node->key) return searchRec(node->left, key);
+        return searchRec(node->right, key);
+    }
+
+    void inorder(Node* node) {
+        if (!node) return;
+        inorder(node->left);
+        cout << node->key << " ";
+        inorder(node->right);
+    }
+
+public:
+    void insert(int key) {
+        root = insertRec(root, key);
+    }
+
+    bool search(int key) {
+        return searchRec(root, key);
+    }
+
+    void displayInorder() {
+        inorder(root);
+        cout << endl;
+    }
+};
+
+int main() {
+    AVL tree;
+    int choice, x;
+
+    do {
+        cout << "\nAVL Tree Menu:\n";
+        cout << "1. Insert\n2. Search\n3. Display (Inorder)\n0. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter value: ";
+                cin >> x;
+                tree.insert(x);
+                cout << "Inserted.\n";
+                break;
+
+            case 2:
+                cout << "Enter value to search: ";
+                cin >> x;
+                cout << (tree.search(x) ? "Found\n" : "Not Found\n");
+                break;
+
+            case 3:
+                cout << "Inorder: ";
+                tree.displayInorder();
+                break;
+
+            case 0:
+                cout << "Exiting...\n";
+                break;
+
+            default:
+                cout << "Invalid choice.\n";
+        }
+    } while (choice != 0);
+
+    return 0;
+}
