@@ -1,0 +1,94 @@
+#4. Implement Stack as an ADT and use it to evaluate a prefix/postfix expression.
+
+#include <iostream>
+#include <string>
+#include <cctype>
+using namespace std;
+
+// -------------------- Stack ADT --------------------
+class Stack {
+private:
+    int top;
+    int arr[100];
+
+public:
+    Stack() { top = -1; }
+
+    void push(int x) {
+        arr[++top] = x;
+    }
+
+    int pop() {
+        return arr[top--];
+    }
+
+    bool empty() {
+        return top == -1;
+    }
+};
+
+// -------------------- Helper: Check if operator --------------------
+bool isOperator(char c) {
+    return (c == '+' || c == '-' || c == '*' || c == '/');
+}
+
+// -------------------- Evaluate Postfix --------------------
+int evaluatePostfix(string exp) {
+    Stack st;
+
+    for (int i = 0; i < exp.length(); i++) {
+        char ch = exp[i];
+
+        if (isdigit(ch)) {
+            st.push(ch - '0');
+        } 
+        else if (isOperator(ch)) {
+            int b = st.pop();
+            int a = st.pop();
+
+            switch (ch) {
+                case '+': st.push(a + b); break;
+                case '-': st.push(a - b); break;
+                case '*': st.push(a * b); break;
+                case '/': st.push(a / b); break;
+            }
+        }
+    }
+    return st.pop();
+}
+
+// -------------------- Evaluate Prefix --------------------
+int evaluatePrefix(string exp) {
+    Stack st;
+
+    for (int i = exp.length() - 1; i >= 0; i--) {
+        char ch = exp[i];
+
+        if (isdigit(ch)) {
+            st.push(ch - '0');
+        }
+        else if (isOperator(ch)) {
+            int a = st.pop();
+            int b = st.pop();
+
+            switch(ch) {
+                case '+': st.push(a + b); break;
+                case '-': st.push(a - b); break;
+                case '*': st.push(a * b); break;
+                case '/': st.push(a / b); break;
+            }
+        }
+    }
+    return st.pop();
+}
+
+// -------------------- Main --------------------
+int main() {
+    string postfix = "231*+9-";     // example postfix
+    string prefix  = "-+2*319";     // example prefix
+
+    cout << "Postfix Evaluation = " << evaluatePostfix(postfix) << endl;
+    cout << "Prefix Evaluation  = " << evaluatePrefix(prefix) << endl;
+
+    return 0;
+}
