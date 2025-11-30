@@ -1,0 +1,90 @@
+Write a program to implement doubly linked list as an ADT that supports the following operations:
+iv. Remove an element from the end of the doubly linked list
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+typedef struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+} Node;
+
+// Delete from end
+void deleteFromEnd(Node** head) {
+    if (*head == NULL) {
+        printf("List is empty! Cannot delete.\n");
+        return;
+    }
+
+    Node* temp = *head;
+
+    // Case 1: Only one node in list
+    if (temp->next == NULL) {
+        *head = NULL;
+        free(temp);
+        printf("Last node deleted.\n");
+        return;
+    }
+
+    // Traverse to the last node
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    // Adjust previous node
+    temp->prev->next = NULL;
+
+    free(temp);
+    printf("Node deleted from end.\n");
+}
+
+// Insert at end (for testing)
+void insertAtEnd(Node** head, int x) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    newNode->data = x;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    Node* temp = *head;
+
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+    newNode->prev = temp;
+}
+
+// Display list
+void display(Node* head) {
+    Node* temp = head;
+    while (temp != NULL) {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    Node* head = NULL;
+
+    insertAtEnd(&head, 10);
+    insertAtEnd(&head, 20);
+    insertAtEnd(&head, 30);
+
+    printf("Original List: ");
+    display(head);
+
+    deleteFromEnd(&head);
+
+    printf("After Deletion: ");
+    display(head);
+
+    return 0;
+}
